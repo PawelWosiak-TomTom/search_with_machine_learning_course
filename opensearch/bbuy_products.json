@@ -10,7 +10,7 @@
 				"type": "date"
 			},
 			"@version": {
-				"type": "text",
+				"type": "long",
 				"fields": {
 					"keyword": {
 						"type": "keyword",
@@ -19,11 +19,11 @@
 				}
 			},
 			"active": {
-				"type": "text",
+				"type": "boolean",
 				"fields": {
 					"keyword": {
 						"type": "keyword",
-						"ignore_above": 256
+						"ignore_above": 10
 					}
 				}
 			},
@@ -221,7 +221,7 @@
 				"fields": {
 					"keyword": {
 						"type": "keyword",
-						"ignore_above": 256
+						"ignore_above": 1024
 					}
 				}
 			},
@@ -380,7 +380,7 @@
 				"fields": {
 					"keyword": {
 						"type": "keyword",
-						"ignore_above": 256
+						"ignore_above": 1024
 					}
 				}
 			}
