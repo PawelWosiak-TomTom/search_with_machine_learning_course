@@ -74,7 +74,12 @@ def query():
         query_obj = create_query("*", [], sort, sortDir)
 
     print("query obj: {}".format(query_obj))
-    response = None   # TODO: Replace me with an appropriate call to OpenSearch
+    
+    index_name = "bbuy_products"
+    response = opensearch.search(
+        body = query_obj,
+        index = index_name
+    )
     # Postprocess results here if you so desire
 
     #print(response)
@@ -89,12 +94,40 @@ def query():
 def create_query(user_query, filters, sort="_score", sortDir="desc"):
     print("Query: {} Filters: {} Sort: {}".format(user_query, filters, sort))
     query_obj = {
-        'size': 10,
-        "query": {
-            "match_all": {} # Replace me with a query that both searches and filters
+        "from": 0, #usefull in paging?
+        "size": 10,
+        "query": { 
+            "query_string": { 
+                "query": user_query + '*' 
+            } 
         },
         "aggs": {
-            #TODO: FILL ME IN
-        }
+            "regularPrice": {
+                "range": {
+                    "field": "regularPrice",
+                    "ranges": [
+                        {"to": 5},
+                        {"from": 5, "to": 10},
+                        {"from": 10, "to": 20},
+                        {"from": 20, "to": 30},
+                        {"from": 30, "to": 40},
+                        {"from": 40, "to": 50},
+                        {"from": 50}                    ]
+                }   
+            },
+            "missing_images": {
+                "filter": {
+                    "bool": {
+                        "must_not": [
+                            {
+                                "exists": {
+                                "field": "image"  
+                                }                    
+                            }
+                        ]
+                    }
+                } 
+            }
+        }    
     }
     return query_obj
