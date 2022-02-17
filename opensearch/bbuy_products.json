@@ -262,7 +262,7 @@
 				}
 			},
 			"regularPrice": {
-				"type": "text",
+				"type": "double",
 				"fields": {
 					"keyword": {
 						"type": "keyword",
@@ -274,7 +274,7 @@
 				"type": "date"
 			},
 			"salePrice": {
-				"type": "text",
+				"type": "double",
 				"fields": {
 					"keyword": {
 						"type": "keyword",
