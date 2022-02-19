@@ -97,8 +97,9 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
         "from": 0, #usefull in paging?
         "size": 10,
         "query": { 
-            "query_string": { 
-                "query": user_query + '*' 
+            "multi_match": { 
+                "query": user_query + '*',
+                "fields": ["name^100", "shortDescription^25", "longDescription^10", "features^5", "department"]
             } 
         },
         "aggs": {
