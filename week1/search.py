@@ -99,7 +99,7 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
         "query": { 
             "multi_match": { 
                 "query": user_query + '*',
-                "fields": ["name^100", "shortDescription^25", "longDescription^10", "features^5", "department"]
+                "fields": ["name^100", "shortDescription^25", "longDescription^10", "features", "department", "modelNumber", "manufacturer", "description", "color"]
             } 
         },
         "aggs": {
@@ -107,7 +107,7 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
                 "range": {
                     "field": "regularPrice",
                     "ranges": [
-                        {"to": 5},
+                        {"to": 105},
                         {"from": 5, "to": 10},
                         {"from": 10, "to": 20},
                         {"from": 20, "to": 30},
