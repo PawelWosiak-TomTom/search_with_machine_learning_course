@@ -93,17 +93,22 @@ def query():
 
 def create_query(user_query, filters, sort="_score", sortDir="desc"):
     print("Query: {} Filters: {} Sort: {}".format(user_query, filters, sort))
+    
+    if (user_query == '' or user_query == '*'):
+        inner_query = {"match_all": {}}
+    else:
+        inner_query = { "multi_match": { 
+                "query": user_query + '*',
+                "fields": ["name^100", "shortDescription^25", "longDescription^10", "color^10", "features", "department", "modelNumber", "manufacturer", "description"]
+            }
+        }
+
     query_obj = {
         "from": 0, #usefull in paging?
         "size": 10,
         "query": {
             "function_score": {
-                "query": {
-                    "multi_match": { 
-                        "query": user_query + '*',
-                        "fields": ["name^100", "shortDescription^25", "longDescription^10", "color^10", "features", "department", "modelNumber", "manufacturer", "description"]
-                    } 
-                },
+                "query": inner_query,
                 "boost_mode": "multiply",
                 "score_mode": "avg",
                  "functions": [
