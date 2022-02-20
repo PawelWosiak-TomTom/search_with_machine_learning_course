@@ -101,7 +101,7 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
                 "query": {
                     "multi_match": { 
                         "query": user_query + '*',
-                        "fields": ["name^100", "shortDescription^25", "longDescription^10", "features", "department", "modelNumber", "manufacturer", "description", "color"]
+                        "fields": ["name^100", "shortDescription^25", "longDescription^10", "color^10", "features", "department", "modelNumber", "manufacturer", "description"]
                     } 
                 },
                 "boost_mode": "multiply",
