@@ -74,7 +74,12 @@ def query():
         query_obj = create_query("*", [], sort, sortDir)
 
     print("query obj: {}".format(query_obj))
-    response = None   # TODO: Replace me with an appropriate call to OpenSearch
+    
+    index_name = "bbuy_products"
+    response = opensearch.search(
+        body = query_obj,
+        index = index_name
+    )
     # Postprocess results here if you so desire
 
     #print(response)
@@ -88,13 +93,84 @@ def query():
 
 def create_query(user_query, filters, sort="_score", sortDir="desc"):
     print("Query: {} Filters: {} Sort: {}".format(user_query, filters, sort))
+    
+    if (user_query == '' or user_query == '*'):
+        inner_query = {"match_all": {}}
+    else:
+        inner_query = { "multi_match": { 
+                "query": user_query + '*',
+                "fields": ["name^100", "shortDescription^25", "longDescription^10", "color^10", "features", "department", "modelNumber", "manufacturer", "description"]
+            }
+        }
+
     query_obj = {
-        'size': 10,
+        "from": 0, #usefull in paging?
+        "size": 10,
         "query": {
-            "match_all": {} # Replace me with a query that both searches and filters
+            "function_score": {
+                "query": inner_query,
+                "boost_mode": "multiply",
+                "score_mode": "avg",
+                 "functions": [
+                    {
+                        "field_value_factor": {
+                            "field": "salesRankShortTerm",
+                            "missing": 10000000, #30 times bigger than max value of salesRank*Term
+                            "modifier": "reciprocal",
+                            "factor": 0.7 # importance gradation: 'short' the most, 'long' the least important
+                        }
+                    },
+                    {
+                        "field_value_factor": {
+                            "field": "salesRankMediumTerm",
+                            "missing": 10000000,
+                            "modifier": "reciprocal",
+                            "factor": 0.8
+                        }
+                    },
+                    {
+                        "field_value_factor": {
+                            "field": "salesRankLongTerm",
+                            "missing": 10000000,
+                            "modifier": "reciprocal",
+                            "factor": 0.9
+                        }
+                    }
+                ]               
+            } 
         },
         "aggs": {
-            #TODO: FILL ME IN
-        }
+            "regularPrice": {
+                "range": {
+                    "field": "regularPrice",
+                    "ranges": [
+                        # should be dynamic
+                        {"key": "$", "to": 10},
+                        {"key": "$$", "from": 10, "to": 100},
+                        {"key": "$$$", "from": 100, "to": 1000},
+                        {"key": "$$$$", "from": 1000, "to": 10000},
+                        {"key": "$$$$$", "from": 10000}
+                        ]
+                }   
+            },
+            "departments": {
+                "terms": {
+                    "field": "department.keyword"
+                }
+            },
+            "missing_images": {
+                "filter": {
+                    "bool": {
+                        "must_not": [
+                            {
+                                "exists": {
+                                "field": "image"  
+                                }                    
+                            }
+                        ]
+                    }
+                } 
+            }
+        }    
     }
     return query_obj
