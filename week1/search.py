@@ -139,13 +139,13 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
                 "range": {
                     "field": "regularPrice",
                     "ranges": [
-                        {"to": 105},
-                        {"from": 5, "to": 10},
-                        {"from": 10, "to": 20},
-                        {"from": 20, "to": 30},
-                        {"from": 30, "to": 40},
-                        {"from": 40, "to": 50},
-                        {"from": 50}                    ]
+                        # should be dynamic
+                        {"key": "$", "to": 10},
+                        {"key": "$$", "from": 10, "to": 100},
+                        {"key": "$$$", "from": 100, "to": 1000},
+                        {"key": "$$$$", "from": 1000, "to": 10000},
+                        {"key": "$$$$$", "from": 10000}
+                        ]
                 }   
             },
             "missing_images": {
