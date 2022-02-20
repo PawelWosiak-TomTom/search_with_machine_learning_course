@@ -153,6 +153,11 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
                         ]
                 }   
             },
+            "departments": {
+                "terms": {
+                    "field": "department.keyword"
+                }
+            },
             "missing_images": {
                 "filter": {
                     "bool": {
