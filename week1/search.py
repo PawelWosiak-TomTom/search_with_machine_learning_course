@@ -96,10 +96,42 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
     query_obj = {
         "from": 0, #usefull in paging?
         "size": 10,
-        "query": { 
-            "multi_match": { 
-                "query": user_query + '*',
-                "fields": ["name^100", "shortDescription^25", "longDescription^10", "features", "department", "modelNumber", "manufacturer", "description", "color"]
+        "query": {
+            "function_score": {
+                "query": {
+                    "multi_match": { 
+                        "query": user_query + '*',
+                        "fields": ["name^100", "shortDescription^25", "longDescription^10", "features", "department", "modelNumber", "manufacturer", "description", "color"]
+                    } 
+                },
+                "boost_mode": "multiply",
+                "score_mode": "avg",
+                 "functions": [
+                    {
+                        "field_value_factor": {
+                            "field": "salesRankShortTerm",
+                            "missing": 10000000, #30 times bigger than max value of salesRank*Term
+                            "modifier": "reciprocal",
+                            "factor": 1.3
+                        }
+                    },
+                    {
+                        "field_value_factor": {
+                            "field": "salesRankMediumTerm",
+                            "missing": 10000000,
+                            "modifier": "reciprocal",
+                            "factor": 1.2
+                        }
+                    },
+                    {
+                        "field_value_factor": {
+                            "field": "salesRankLongTerm",
+                            "missing": 10000000,
+                            "modifier": "reciprocal",
+                            "factor": 1.1
+                        }
+                    }
+                ]               
             } 
         },
         "aggs": {
