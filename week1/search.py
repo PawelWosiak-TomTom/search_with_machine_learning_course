@@ -112,7 +112,7 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
                             "field": "salesRankShortTerm",
                             "missing": 10000000, #30 times bigger than max value of salesRank*Term
                             "modifier": "reciprocal",
-                            "factor": 0.7
+                            "factor": 0.7 # importance gradation: 'short' the most, 'long' the least important
                         }
                     },
                     {
