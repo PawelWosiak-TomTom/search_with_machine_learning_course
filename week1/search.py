@@ -112,7 +112,7 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
                             "field": "salesRankShortTerm",
                             "missing": 10000000, #30 times bigger than max value of salesRank*Term
                             "modifier": "reciprocal",
-                            "factor": 1.3
+                            "factor": 0.7
                         }
                     },
                     {
@@ -120,7 +120,7 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
                             "field": "salesRankMediumTerm",
                             "missing": 10000000,
                             "modifier": "reciprocal",
-                            "factor": 1.2
+                            "factor": 0.8
                         }
                     },
                     {
@@ -128,7 +128,7 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
                             "field": "salesRankLongTerm",
                             "missing": 10000000,
                             "modifier": "reciprocal",
-                            "factor": 1.1
+                            "factor": 0.9
                         }
                     }
                 ]               
