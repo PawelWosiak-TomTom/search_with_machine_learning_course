@@ -36,6 +36,7 @@ class DataPrepper:
         # remove sale/promotional queries like: `LaborDay_HomeAppliances_20110902`
         print("Clicks pre filtering: %s" % len(clicks_df))
         clicks_df = clicks_df[clicks_df["query"].str.match("\w+_(\w+_)?[\w+|\d+]") == False]
+        clicks_df = clicks_df[clicks_df["query"].str.match("^\*$") == False] # remove also queries='*'
         #print("Clicks post filtering promos: %s" % len(clicks_df))
         verify_file_path = "%s/%s" % (output_dir, verify_file)
         print("Verify info: flag: %s, path: %s, exists: %s" % (verify_file, verify_file_path, os.path.exists(verify_file_path)))
