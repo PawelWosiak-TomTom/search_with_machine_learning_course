@@ -251,9 +251,12 @@ class DataPrepper:
             feature_map["query_id"] = query_id
             feature_results.append(feature_map)
 
-        frame = pd.DataFrame(feature_results)
-        return frame.astype({'doc_id': 'int64', 'query_id': 'int64', 'sku': 'int64'})
-        # IMPLEMENT_END
+        if feature_results:
+            frame = pd.DataFrame(feature_results)
+            return frame.astype({'doc_id': 'int64', 'query_id': 'int64', 'sku': 'int64'})
+        else: 
+            return pd.DataFrame()
+
 
     # Can try out normalizing data, but for XGb, you really don't have to since it is just finding splits
     def normalize_data(self, ranks_features_df, feature_set, normalize_type_map):
