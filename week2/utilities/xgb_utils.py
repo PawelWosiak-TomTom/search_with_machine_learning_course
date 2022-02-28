@@ -1,4 +1,6 @@
 # Utilities for working with XG Boost
+import warnings
+warnings.filterwarnings("ignore")
 import xgboost as xgb
 from xgboost import plot_importance, plot_tree
 from matplotlib import pyplot as plt
