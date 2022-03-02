@@ -133,3 +133,4 @@ dmypy.json
 data/pruned_products/pruned_products_*.xml
 week3/computer_products/computer_products.xml
 week3/phone_products/phone_products.xml
+fasttext_tutorial/*
