@@ -20,7 +20,7 @@ general.add_argument("--output", default="/workspace/datasets/fasttext/output.fa
 general.add_argument("--sample_rate", default=1.0, type=float, help="The rate at which to sample input (default is 1.0)")
 
 # IMPLEMENT: Setting min_products removes infrequent categories and makes the classifier's task easier.
-general.add_argument("--min_products", default=300, type=int, help="The minimum number of products per category (default is 0).")
+general.add_argument("--min_products", default=100, type=int, help="The minimum number of products per category (default is 0).")
 
 args = parser.parse_args()
 output_file = args.output
@@ -58,19 +58,26 @@ with open(output_file, 'w') as output:
                         entry = "__label__%s %s\n" % (cat, transform_name(name))
                         dd[cat].append(entry)
 
-    filtered_out_entries = 0
-    filtered_in_entries = 0
+    filtered_out_lines = 0
+    filtered_in_lines = 0
+    filtered_out_categories = 0
+    filtered_in_categories = 0
     print("Distinct categories count: %s" % len(dd))
     print("Writing results to %s" % output_file)
     for (cat, lines) in dd.items():
         if (len(lines) > min_products):            
+            filtered_in_categories += 1
             for line in lines:
                 output.write(line)
-                filtered_in_entries += 1
+                filtered_in_lines += 1
         else:
-            filtered_out_entries += len(lines)
+            filtered_out_categories += 1
+            filtered_out_lines += len(lines)
     
-    print("Saved lines %s, filtered out due to 'min_products=%s': %s, (sum = %s)" 
-        % (filtered_in_entries, min_products, filtered_out_entries, filtered_in_entries + filtered_out_entries))
-
+    print("Saved: lines %s, categories %s, filtered out due to 'min_products=%s' lines %s, categories %s (sum: lines %s, categories %s)" 
+        % (filtered_in_lines, filtered_in_categories, 
+        min_products, 
+        filtered_out_lines, filtered_out_categories, 
+        filtered_in_lines + filtered_out_lines,
+        filtered_in_categories + filtered_out_categories))
 
