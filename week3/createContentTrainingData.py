@@ -20,7 +20,7 @@ general.add_argument("--output", default="/workspace/datasets/fasttext/output.fa
 general.add_argument("--sample_rate", default=1.0, type=float, help="The rate at which to sample input (default is 1.0)")
 
 # IMPLEMENT: Setting min_products removes infrequent categories and makes the classifier's task easier.
-general.add_argument("--min_products", default=0, type=int, help="The minimum number of products per category (default is 0).")
+general.add_argument("--min_products", default=300, type=int, help="The minimum number of products per category (default is 0).")
 
 args = parser.parse_args()
 output_file = args.output
@@ -70,6 +70,7 @@ with open(output_file, 'w') as output:
         else:
             filtered_out_entries += len(lines)
     
-    print("Saved lines %s, filtered out due to 'min_products=%s': %s" % (filtered_in_entries, min_products, filtered_out_entries))
+    print("Saved lines %s, filtered out due to 'min_products=%s': %s, (sum = %s)" 
+        % (filtered_in_entries, min_products, filtered_out_entries, filtered_in_entries + filtered_out_entries))
 
 
