@@ -5,8 +5,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 def transform_name(product_name):
-    # IMPLEMENT
-    return product_name
+    return product_name.lower()
 
 # Directory for product data
 directory = r'/workspace/search_with_machine_learning_course/data/pruned_products/'
