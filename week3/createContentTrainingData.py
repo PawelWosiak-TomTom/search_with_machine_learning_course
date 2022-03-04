@@ -74,8 +74,9 @@ with open(output_file, 'w') as output:
             filtered_out_categories += 1
             filtered_out_lines += len(lines)
     
-    print("Saved: lines %s, categories %s, filtered out due to 'min_products=%s' lines %s, categories %s (sum: lines %s, categories %s)" 
-        % (filtered_in_lines, filtered_in_categories, 
+    print("Saved: lines %s (%s%%), categories %s (%s%%), filtered out due to 'min_products=%s' lines %s, categories %s (sum: lines %s, categories %s)" 
+        % (filtered_in_lines, int(100*filtered_in_lines/(filtered_in_lines + filtered_out_lines)),
+        filtered_in_categories, int(100*filtered_in_categories/(filtered_in_categories + filtered_out_categories)),
         min_products, 
         filtered_out_lines, filtered_out_categories, 
         filtered_in_lines + filtered_out_lines,
