@@ -40,7 +40,8 @@ with open(output_file_test, 'w') as output_test:
             cat = line.split(' ')[0]
             product_tab = line.split(' ')[1:]
             product_str = ' '.join(product_tab)
-            dd[cat].append(product_str)
+            product_transformed = transform_name(product_str)
+            dd[cat].append(product_transformed)
 
 filtered_out_lines = 0
 filtered_in_lines = 0

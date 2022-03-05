@@ -5,9 +5,6 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from collections import defaultdict
 
-def transform_name(product_name):
-    return product_name.lower()
-
 # Directory for product data
 directory = r'/workspace/search_with_machine_learning_course/data/pruned_products/'
 
@@ -55,30 +52,5 @@ with open(output_file, 'w') as output:
                         cat = child.find('categoryPath')[len(child.find('categoryPath')) - 1][0].text
                         # Replace newline chars with spaces so fastText doesn't complain
                         name = child.find('name').text.replace('\n', ' ')
-                        entry = "__label__%s %s\n" % (cat, transform_name(name))
-                        dd[cat].append(entry)
-
-    filtered_out_lines = 0
-    filtered_in_lines = 0
-    filtered_out_categories = 0
-    filtered_in_categories = 0
-    print("Distinct categories count: %s" % len(dd))
-    print("Writing results to %s" % output_file)
-    for (cat, lines) in dd.items():
-        if (len(lines) > min_products):            
-            filtered_in_categories += 1
-            for line in lines:
-                output.write(line)
-                filtered_in_lines += 1
-        else:
-            filtered_out_categories += 1
-            filtered_out_lines += len(lines)
-    
-    print("Saved: lines %s (%s%%), categories %s (%s%%), filtered out due to 'min_products=%s' lines %s, categories %s (sum: lines %s, categories %s)" 
-        % (filtered_in_lines, int(100*filtered_in_lines/(filtered_in_lines + filtered_out_lines)),
-        filtered_in_categories, int(100*filtered_in_categories/(filtered_in_categories + filtered_out_categories)),
-        min_products, 
-        filtered_out_lines, filtered_out_categories, 
-        filtered_in_lines + filtered_out_lines,
-        filtered_in_categories + filtered_out_categories))
-
+                        entry = "__label__%s %s\n" % (cat, name)
+                        output.write(entry)
