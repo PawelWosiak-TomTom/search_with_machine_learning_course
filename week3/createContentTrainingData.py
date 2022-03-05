@@ -5,8 +5,19 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from collections import defaultdict
 
+
 def transform_name(product_name):
     return product_name.lower()
+
+
+def transform_line(line):
+    cat = line.split(' ')[0]
+    product_tab = line.split(' ')[1:]
+    product_str = ' '.join(product_tab)
+    product_transformed = transform_name(product_str)
+    line_transformed = cat + ' ' + product_transformed
+    return cat, line_transformed
+
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 general = parser.add_argument_group("general")
@@ -33,15 +44,12 @@ print("Processing %s" % input_file)
 print("Writing test results to %s" % output_file_test)
 with open(output_file_test, 'w') as output_test:
     for line in open(input_file):
+        cat, line_transformed = transform_line(line)
         r = random.randint(0, 100)
-        if r < 50:
-            output_test.write(line)
+        if r < 20:
+            output_test.write(line_transformed)
         else:
-            cat = line.split(' ')[0]
-            product_tab = line.split(' ')[1:]
-            product_str = ' '.join(product_tab)
-            product_transformed = transform_name(product_str)
-            dd[cat].append(product_transformed)
+            dd[cat].append(line_transformed)
 
 filtered_out_lines = 0
 filtered_in_lines = 0
@@ -54,7 +62,7 @@ with open(output_file_train, 'w') as output_train:
         if (len(lines) > min_products):            
             filtered_in_categories += 1
             for line in lines:
-                output_train.write(cat + ' ' + line)
+                output_train.write(line)
                 filtered_in_lines += 1
         else:
             filtered_out_categories += 1
