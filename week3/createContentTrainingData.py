@@ -25,17 +25,22 @@ output_file_train = args.outputTrain
 output_file_test = args.outputTest
 
 input_file = args.input
-# IMPLEMENT:  Track the number of items in each category and only output if above the min
 min_products = args.min_products
 sample_rate = args.sample_rate
 
 dd = defaultdict(list)
 print("Processing %s" % input_file)
-for line in open(input_file):
-    cat = line.split(' ')[0]
-    product_tab = line.split(' ')[1:]
-    product_str = ' '.join(product_tab)
-    dd[cat].append(product_str)
+print("Writing test results to %s" % output_file_test)
+with open(output_file_test, 'w') as output_test:
+    for line in open(input_file):
+        r = random.randint(0, 100)
+        if r < 50:
+            output_test.write(line)
+        else:
+            cat = line.split(' ')[0]
+            product_tab = line.split(' ')[1:]
+            product_str = ' '.join(product_tab)
+            dd[cat].append(product_str)
 
 filtered_out_lines = 0
 filtered_in_lines = 0
@@ -43,12 +48,12 @@ filtered_out_categories = 0
 filtered_in_categories = 0
 print("Distinct categories count: %s" % len(dd))
 print("Writing results to %s" % output_file_train)
-with open(output_file_train, 'w') as output:
+with open(output_file_train, 'w') as output_train:
     for (cat, lines) in dd.items():
         if (len(lines) > min_products):            
             filtered_in_categories += 1
             for line in lines:
-                output.write(line)
+                output_train.write(cat + ' ' + line)
                 filtered_in_lines += 1
         else:
             filtered_out_categories += 1
