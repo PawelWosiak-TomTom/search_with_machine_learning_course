@@ -4,10 +4,17 @@ import random
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from collections import defaultdict
+from nltk.stem import SnowballStemmer
 
+stemmer = SnowballStemmer('english')
 
 def transform_name(product_name):
-    return product_name.lower()
+    stemmed = stemmer.stem(product_name)
+    if stemmed != product_name.lower():        
+        print("stemmed %s -> %s" % (product_name, stemmed) ) 
+        #surprisingly nothing was logged, like 'stemer' did not change anythign more than '.lower'
+
+    return stemmed
 
 
 def transform_line(line):
@@ -31,23 +38,15 @@ general.add_argument("--sample_rate", default=1.0, type=float, help="The rate at
 general.add_argument("--min_products", default=50, type=int, help="The minimum number of products per category (default is 0).")
 
 args = parser.parse_args()
-output_file_train = args.outputTrain
-output_file_test = args.outputTest
-
+output_file = args.output
 input_file = args.input
 min_products = args.min_products
 sample_rate = args.sample_rate
 
 dd = defaultdict(list)
 print("Processing %s" % input_file)
-print("Writing test results to %s" % output_file_test)
-with open(output_file_test, 'w') as output_test:
 for line in open(input_file):
     cat, line_transformed = transform_line(line)
-        r = random.randint(0, 100)
-        if r < 20:
-            output_test.write(line_transformed)
-        else:
     dd[cat].append(line_transformed)
 
 filtered_out_lines = 0
@@ -61,7 +60,6 @@ with open(output_file, 'w') as output:
         if (len(lines) > min_products):            
             filtered_in_categories += 1
             for line in lines:
-                output_train.write(line)
                 filtered_in_lines += 1
                 if random.random() < sample_rate:
                     output.write(line)
