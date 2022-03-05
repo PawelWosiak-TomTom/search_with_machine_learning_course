@@ -21,15 +21,14 @@ def transform_line(line):
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 general = parser.add_argument_group("general")
-general.add_argument("--input", default="/workspace/datasets/fasttext/output.fasttext",  help="Input fasttext file")
-general.add_argument("--outputTrain", default="/workspace/datasets/fasttext/train.fasttext", help="the file to output train set to")
-general.add_argument("--outputTest", default="/workspace/datasets/fasttext/test.fasttext", help="the file to output test set to")
+general.add_argument("--input", default="/workspace/datasets/fasttext/full.fasttext",  help="Input fasttext file")
+general.add_argument("--output", default="/workspace/datasets/fasttext/output.fasttext", help="the file to output set to")
 
 # Consuming all of the product data will take over an hour! But we still want to be able to obtain a representative sample.
 general.add_argument("--sample_rate", default=1.0, type=float, help="The rate at which to sample input (default is 1.0)")
 
 # IMPLEMENT: Setting min_products removes infrequent categories and makes the classifier's task easier.
-general.add_argument("--min_products", default=100, type=int, help="The minimum number of products per category (default is 0).")
+general.add_argument("--min_products", default=50, type=int, help="The minimum number of products per category (default is 0).")
 
 args = parser.parse_args()
 output_file_train = args.outputTrain
@@ -43,27 +42,29 @@ dd = defaultdict(list)
 print("Processing %s" % input_file)
 print("Writing test results to %s" % output_file_test)
 with open(output_file_test, 'w') as output_test:
-    for line in open(input_file):
-        cat, line_transformed = transform_line(line)
+for line in open(input_file):
+    cat, line_transformed = transform_line(line)
         r = random.randint(0, 100)
         if r < 20:
             output_test.write(line_transformed)
         else:
-            dd[cat].append(line_transformed)
+    dd[cat].append(line_transformed)
 
 filtered_out_lines = 0
 filtered_in_lines = 0
 filtered_out_categories = 0
 filtered_in_categories = 0
 print("Distinct categories count: %s" % len(dd))
-print("Writing results to %s" % output_file_train)
-with open(output_file_train, 'w') as output_train:
+print("Writing results to %s" % output_file)
+with open(output_file, 'w') as output:
     for (cat, lines) in dd.items():
         if (len(lines) > min_products):            
             filtered_in_categories += 1
             for line in lines:
                 output_train.write(line)
                 filtered_in_lines += 1
+                if random.random() < sample_rate:
+                    output.write(line)
         else:
             filtered_out_categories += 1
             filtered_out_lines += len(lines)
