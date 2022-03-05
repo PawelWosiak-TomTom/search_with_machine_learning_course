@@ -8,13 +8,11 @@ from collections import defaultdict
 def transform_name(product_name):
     return product_name.lower()
 
-# Directory for product data
-directory = r'/workspace/search_with_machine_learning_course/data/pruned_products/'
-
 parser = argparse.ArgumentParser(description='Process some integers.')
 general = parser.add_argument_group("general")
-general.add_argument("--input", default=directory,  help="The directory containing product data")
-general.add_argument("--output", default="/workspace/datasets/fasttext/output.fasttext", help="the file to output to")
+general.add_argument("--input", default="/workspace/datasets/fasttext/output.fasttext",  help="Input fasttext file")
+general.add_argument("--outputTrain", default="/workspace/datasets/fasttext/train.fasttext", help="the file to output train set to")
+general.add_argument("--outputTest", default="/workspace/datasets/fasttext/test.fasttext", help="the file to output test set to")
 
 # Consuming all of the product data will take over an hour! But we still want to be able to obtain a representative sample.
 general.add_argument("--sample_rate", default=1.0, type=float, help="The rate at which to sample input (default is 1.0)")
@@ -23,47 +21,29 @@ general.add_argument("--sample_rate", default=1.0, type=float, help="The rate at
 general.add_argument("--min_products", default=100, type=int, help="The minimum number of products per category (default is 0).")
 
 args = parser.parse_args()
-output_file = args.output
-path = Path(output_file)
-output_dir = path.parent
-if os.path.isdir(output_dir) == False:
-        os.mkdir(output_dir)
+output_file_train = args.outputTrain
+output_file_test = args.outputTest
 
-if args.input:
-    directory = args.input
+input_file = args.input
 # IMPLEMENT:  Track the number of items in each category and only output if above the min
 min_products = args.min_products
 sample_rate = args.sample_rate
 
-print("Writing results to %s" % output_file)
 dd = defaultdict(list)
-with open(output_file, 'w') as output:
-    for filename in os.listdir(directory):
-        if filename.endswith(".xml"):
-            print("Processing %s" % filename)
-            f = os.path.join(directory, filename)
-            tree = ET.parse(f)
-            root = tree.getroot()
-            for child in root:
-                if random.random() > sample_rate:
-                    continue
-                # Check to make sure category name is valid
-                if (child.find('name') is not None and child.find('name').text is not None and
-                    child.find('categoryPath') is not None and len(child.find('categoryPath')) > 0 and
-                    child.find('categoryPath')[len(child.find('categoryPath')) - 1][0].text is not None):
-                        # Choose last element in categoryPath as the leaf categoryId
-                        cat = child.find('categoryPath')[len(child.find('categoryPath')) - 1][0].text
-                        # Replace newline chars with spaces so fastText doesn't complain
-                        name = child.find('name').text.replace('\n', ' ')
-                        entry = "__label__%s %s\n" % (cat, transform_name(name))
-                        dd[cat].append(entry)
+print("Processing %s" % input_file)
+for line in open(input_file):
+    cat = line.split(' ')[0]
+    product_tab = line.split(' ')[1:]
+    product_str = ' '.join(product_tab)
+    dd[cat].append(product_str)
 
-    filtered_out_lines = 0
-    filtered_in_lines = 0
-    filtered_out_categories = 0
-    filtered_in_categories = 0
-    print("Distinct categories count: %s" % len(dd))
-    print("Writing results to %s" % output_file)
+filtered_out_lines = 0
+filtered_in_lines = 0
+filtered_out_categories = 0
+filtered_in_categories = 0
+print("Distinct categories count: %s" % len(dd))
+print("Writing results to %s" % output_file_train)
+with open(output_file_train, 'w') as output:
     for (cat, lines) in dd.items():
         if (len(lines) > min_products):            
             filtered_in_categories += 1
@@ -73,12 +53,12 @@ with open(output_file, 'w') as output:
         else:
             filtered_out_categories += 1
             filtered_out_lines += len(lines)
-    
-    print("Saved: lines %s (%s%%), categories %s (%s%%), filtered out due to 'min_products=%s' lines %s, categories %s (sum: lines %s, categories %s)" 
-        % (filtered_in_lines, int(100*filtered_in_lines/(filtered_in_lines + filtered_out_lines)),
-        filtered_in_categories, int(100*filtered_in_categories/(filtered_in_categories + filtered_out_categories)),
-        min_products, 
-        filtered_out_lines, filtered_out_categories, 
-        filtered_in_lines + filtered_out_lines,
-        filtered_in_categories + filtered_out_categories))
+
+print("Saved: lines %s (%s%%), categories %s (%s%%), filtered out due to 'min_products=%s' lines %s, categories %s (sum: lines %s, categories %s)" 
+    % (filtered_in_lines, int(100*filtered_in_lines/(filtered_in_lines + filtered_out_lines)),
+    filtered_in_categories, int(100*filtered_in_categories/(filtered_in_categories + filtered_out_categories)),
+    min_products, 
+    filtered_out_lines, filtered_out_categories, 
+    filtered_in_lines + filtered_out_lines,
+    filtered_in_categories + filtered_out_categories))
 
