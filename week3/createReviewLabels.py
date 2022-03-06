@@ -14,16 +14,15 @@ def transform_training_data(title, comment):
     return line
 
 def simplify_scale(rating):
-    return rating
-    # if ('0.0' == rating or '1.0' == rating or '2.0' == rating):
-    #     return 'negative'
-    # elif ('3.0' == rating ):
-    #     return 'neutral'
-    # if ('4.0' == rating or '5.0' == rating):
-    #     return 'positive'
-    # else:
-    #     print("Unhandled rating: %s" % rating)
-    #     return "unknown"
+    if ('0.0' == rating or '1.0' == rating or '2.0' == rating):
+        return 'negative'
+    elif ('3.0' == rating ):
+        return 'neutral'
+    if ('4.0' == rating or '5.0' == rating):
+        return 'positive'
+    else:
+        print("Unhandled rating: %s" % rating)
+        return "unknown"
 
 # Directory for review data
 directory = r'/workspace/datasets/product_data/reviews/'

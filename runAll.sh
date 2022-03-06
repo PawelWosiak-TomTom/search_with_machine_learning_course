@@ -7,14 +7,21 @@ wc -l $DIR/random.fasttext
 cat $DIR/random.fasttext  | cut -d ' ' -f1 | sort | uniq -c
 head -n 176000 $DIR/random.fasttext > $DIR/train.fasttext
 tail -n 44000 $DIR/random.fasttext > $DIR/test.fasttext
-#cat train.fasttext | cut -d ' ' -f1 | sort | uniq -c
+echo "labels count before balancing: " 
+cat train.fasttext | cut -d ' ' -f1 | sort | uniq -c
 #cat test.fasttext | cut -d ' ' -f1 | sort | uniq -c
 mv $DIR/train.fasttext $DIR/train-unbalanced.fasttext 
-cat $DIR/train-unbalanced.fasttext | grep '__label__1.0' | head -n 7800 >> $DIR/train-balanced.fasttext
-cat $DIR/train-unbalanced.fasttext | grep '__label__2.0' | head -n 7800 >> $DIR/train-balanced.fasttext
-cat $DIR/train-unbalanced.fasttext | grep '__label__3.0' | head -n 7800 >> $DIR/train-balanced.fasttext
-cat $DIR/train-unbalanced.fasttext | grep '__label__4.0' | head -n 7800 >> $DIR/train-balanced.fasttext
-cat $DIR/train-unbalanced.fasttext | grep '__label__5.0' | head -n 7800 >> $DIR/train-balanced.fasttext
+
+# cat $DIR/train-unbalanced.fasttext | grep '__label__1.0' | head -n 7800 >> $DIR/train-balanced.fasttext
+# cat $DIR/train-unbalanced.fasttext | grep '__label__2.0' | head -n 7800 >> $DIR/train-balanced.fasttext
+# cat $DIR/train-unbalanced.fasttext | grep '__label__3.0' | head -n 7800 >> $DIR/train-balanced.fasttext
+# cat $DIR/train-unbalanced.fasttext | grep '__label__4.0' | head -n 7800 >> $DIR/train-balanced.fasttext
+# cat $DIR/train-unbalanced.fasttext | grep '__label__5.0' | head -n 7800 >> $DIR/train-balanced.fasttext
+
+cat $DIR/train-unbalanced.fasttext | grep '__label__negative' | head -n 10000 >> $DIR/train-balanced.fasttext
+cat $DIR/train-unbalanced.fasttext | grep '__label__neutral' | head -n 10000 >> $DIR/train-balanced.fasttext
+cat $DIR/train-unbalanced.fasttext | grep '__label__positive' | head -n 10000 >> $DIR/train-balanced.fasttext
+
 shuf $DIR/train-balanced.fasttext > $DIR/train-balanced-random.fasttext
 echo -n "lines in train: "; wc -l $DIR/train-balanced-random.fasttext
 echo -n "lines in test : "; wc -l $DIR/test.fasttext
