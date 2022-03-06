@@ -19,9 +19,11 @@ rm $DIR/train-balanced.fasttext # need to cleanup first, as will 'append'
 # cat $DIR/train-unbalanced.fasttext | grep '__label__4.0' | head -n 7800 >> $DIR/train-balanced.fasttext
 # cat $DIR/train-unbalanced.fasttext | grep '__label__5.0' | head -n 7800 >> $DIR/train-balanced.fasttext
 
-cat $DIR/train-unbalanced.fasttext | grep '__label__negative' | head -n 23000 >> $DIR/train-balanced.fasttext
-cat $DIR/train-unbalanced.fasttext | grep '__label__neutral' | head -n 10000 >> $DIR/train-balanced.fasttext
-cat $DIR/train-unbalanced.fasttext | grep '__label__positive' | head -n 140000 >> $DIR/train-balanced.fasttext
+cat $DIR/train-unbalanced.fasttext | grep -v '__label__0.0' > $DIR/train-balanced.fasttext
+
+# cat $DIR/train-unbalanced.fasttext | grep '__label__negative' | head -n 23000 >> $DIR/train-balanced.fasttext
+# cat $DIR/train-unbalanced.fasttext | grep '__label__neutral' | head -n 10000 >> $DIR/train-balanced.fasttext
+# cat $DIR/train-unbalanced.fasttext | grep '__label__positive' | head -n 140000 >> $DIR/train-balanced.fasttext
 
 shuf $DIR/train-balanced.fasttext > $DIR/train-balanced-random.fasttext
 echo -n "lines in train: "; wc -l $DIR/train-balanced-random.fasttext
