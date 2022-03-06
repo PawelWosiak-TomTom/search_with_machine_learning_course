@@ -2,8 +2,11 @@ import os
 import random
 import xml.etree.ElementTree as ET
 import argparse
+import re
 from pathlib import Path
+from nltk.stem import SnowballStemmer
 
+stemmer = SnowballStemmer('english')
 parser = argparse.ArgumentParser(description='Process some integers.')
 general = parser.add_argument_group("general")
 general.add_argument("--input", default="/workspace/datasets/fasttext/full.fasttext",  help="The file containing the products in fasttext format")
@@ -22,9 +25,13 @@ if os.path.isdir(output_dir) == False:
 
 sample_rate = args.sample_rate
 
+
 def transform_training_data(name):
-    # IMPLEMENT
-    return name.replace('\n', ' ')
+    name = name.replace('\n', ' ')
+    name = re.sub(r'[\W]+', ' ', name) #remove all non-alphanumeric
+    # name = " ".join((stemmer.stem(token) for token in name.split()))
+    name = name.lower()
+    return name
 
 
 def transform_line(line):
@@ -36,11 +43,21 @@ def transform_line(line):
 
 # Directory for product data
 
+filtered_in = 0
+filtered_out = 0
 print("Processing %s" % input_file)
-print("Writing results to %s" % output_file)
+print("Writing to %s" % output_file)
 with open(output_file, 'w') as output:
     for line in open(input_file):
         if random.random() > sample_rate:
+            filtered_out += 1
             continue
         product_transformed = transform_line(line)
         output.write(product_transformed + "\n")        
+        filtered_in += 1
+
+print("Saved lines %s (%s%%), filtered out due to 'sample_rate=%s' lines %s (sum: lines %s)" 
+    % (filtered_in, int(100*filtered_in/(filtered_in + filtered_out)),
+    sample_rate, 
+    filtered_out,
+    filtered_in + filtered_out))
