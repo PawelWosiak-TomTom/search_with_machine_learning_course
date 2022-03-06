@@ -8,7 +8,7 @@ stemmer = SnowballStemmer('english')
 
 def transform_training_data(title, comment):
     line = title + ' ' + comment
-    line = re.sub(r'[\W]+', ' ', line) #remove all non-alphanumeric
+    # line = re.sub(r'[\W]+', ' ', line) #remove all non-alphanumeric
     # line = " ".join((stemmer.stem(token) for token in line.split()))
     line = line.lower()
     return line
