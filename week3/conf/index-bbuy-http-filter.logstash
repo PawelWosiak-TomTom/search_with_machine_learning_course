@@ -1,6 +1,6 @@
 input {
   file {
-    path => ["/workspace/search_with_machine_learning_course/data/phone_products/phone_products.xml"]  #Put in the path to the ungzipped/untarred product data.  To start smaller, simply select a smaller number of files or copy a few files to a different directory.
+    path => ["/workspace/search_with_machine_learning_course/week3/phone_products/phone_products.xml"]  #Put in the path to the ungzipped/untarred product data.  To start smaller, simply select a smaller number of files or copy a few files to a different directory.
     start_position => "beginning"
     codec => multiline {
             pattern => "<product>"
