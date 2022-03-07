@@ -31,5 +31,5 @@ echo -n "lines in test : "; wc -l $DIR/test.fasttext
 echo "labels after balancing: "
 cat $DIR/train-balanced-random.fasttext | cut -d ' ' -f1 | sort | uniq -c
 
-~/fastText-0.9.2/fasttext supervised -input $DIR/train-balanced-random.fasttext -output $DIR/model_reviews -wordNgrams 2
+~/fastText-0.9.2/fasttext supervised -input $DIR/train-balanced-random.fasttext -output $DIR/model_reviews -wordNgrams 3
 ~/fastText-0.9.2/fasttext test $DIR/model_reviews.bin $DIR/test.fasttext

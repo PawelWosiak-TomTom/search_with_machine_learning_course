@@ -8,21 +8,22 @@ stemmer = SnowballStemmer('english')
 
 def transform_training_data(title, comment):
     line = title + ' ' + comment
-    # line = re.sub(r'[\W]+', ' ', line) #remove all non-alphanumeric
+    line = re.sub(r'[\W]+', ' ', line) #remove all non-alphanumeric
     # line = " ".join((stemmer.stem(token) for token in line.split()))
     line = line.lower()
     return line
 
 def simplify_scale(rating):
-    if ('0.0' == rating or '1.0' == rating or '2.0' == rating):
-        return 'negative'
-    elif ('3.0' == rating ):
-        return 'neutral'
-    if ('4.0' == rating or '5.0' == rating):
-        return 'positive'
-    else:
-        print("Unhandled rating: %s" % rating)
-        return "unknown"
+    return rating
+    # if ('0.0' == rating or '1.0' == rating or '2.0' == rating):
+    #     return 'negative'
+    # elif ('3.0' == rating ):
+    #     return 'neutral'
+    # if ('4.0' == rating or '5.0' == rating):
+    #     return 'positive'
+    # else:
+    #     print("Unhandled rating: %s" % rating)
+    #     return "unknown"
 
 # Directory for review data
 directory = r'/workspace/datasets/product_data/reviews/'
