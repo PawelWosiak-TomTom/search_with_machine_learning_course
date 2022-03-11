@@ -1,9 +1,9 @@
 # A simple loop that can be run to check on counts for our two indices as you are indexing.  Ctrl-c to get out.
 while [ true ];
 do
-  echo "Queries:"
+  echo -n "Queries:"
   curl -k -XGET -u admin:admin  "https://localhost:9200/_cat/count/bbuy_queries";
-  echo "Products:"
+  echo -n "Products:"
   curl -k -XGET -u admin:admin  "https://localhost:9200/_cat/count/bbuy_products";
-  sleep 100;
+  sleep 10;
 done

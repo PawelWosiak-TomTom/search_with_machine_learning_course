@@ -4,8 +4,8 @@ usage()
   exit 2
 }
 
-PRODUCTS_JSON_FILE="/workspace/search_with_machine_learning_course/opensearch/bbuy_products.json"
-QUERIES_JSON_FILE="/workspace/search_with_machine_learning_course/opensearch/bbuy_queries.json"
+PRODUCTS_JSON_FILE="/workspace/search_with_machine_learning_course/week2/conf/bbuy_products.json"
+QUERIES_JSON_FILE="/workspace/search_with_machine_learning_course/week2/conf/bbuy_queries.json"
 
 PRODUCTS_LOGSTASH_FILE="/workspace/search_with_machine_learning_course/logstash/index-bbuy.logstash"
 QUERIES_LOGSTASH_FILE="/workspace/search_with_machine_learning_course/logstash/index-bbuy-queries.logstash"
@@ -33,9 +33,9 @@ shift $((OPTIND -1))
 echo "Creating index settings and mappings"
 echo " Product file: $PRODUCTS_JSON_FILE"
 echo " Query file: $QUERIES_JSON_FILE"
-curl -k -X PUT -u admin  "https://localhost:9200/bbuy_products" -H 'Content-Type: application/json' -d "@$PRODUCTS_JSON_FILE"
+curl -k -X PUT -u admin:admin  "https://localhost:9200/bbuy_products" -H 'Content-Type: application/json' -d "@$PRODUCTS_JSON_FILE"
 echo ""
-curl -k -X PUT -u admin  "https://localhost:9200/bbuy_queries" -H 'Content-Type: application/json' -d "@$QUERIES_JSON_FILE"
+curl -k -X PUT -u admin:admin  "https://localhost:9200/bbuy_queries" -H 'Content-Type: application/json' -d "@$QUERIES_JSON_FILE"
 
 echo ""
 echo "Writing logs to $LOGS_DIR"

@@ -1,0 +1,56 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "week2",
+                "FLASK_ENV": "development"
+            },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--port",
+                "3000"
+            ],
+            "jinja": true
+        },
+        {
+            "name": "generate_impressions",
+            "type": "python",
+            "request": "launch",
+            "program": "week2/utilities/build_ltr.py",
+            "args": [
+                "--generate_impressions",
+                "--output_dir",
+                "/workspace/ltr_output",
+                "--train_file",
+                "/workspace/ltr_output/train.csv",
+                "--synthesize"
+            ]
+        },
+        {
+            "name": "create_xgb_training",
+            "type": "python",
+            "request": "launch",
+            "program": "week2/utilities/build_ltr.py",
+            "args": [
+                "--create_xgb_training",
+                "--ltr_terms_field",
+                "sku",
+                "--output_dir",
+                "/workspace/ltr_output",
+                "-f",
+                "week2/conf/ltr_featureset.json",
+                "--click_model",
+                "heuristic"
+            ]
+        }
+    ]
+}
