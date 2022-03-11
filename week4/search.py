@@ -57,7 +57,7 @@ def process_filters(filters_input):
     return filters, display_filters, applied_filters
 
 def get_query_category(user_query, query_class_model):
-    threshold = 0.5
+    print("Looking for category for '%s'" % user_query)
     prediction_tuple = query_class_model.predict(user_query, k=5)
     predictions = prediction_tuple[0]
     scores = prediction_tuple[1]
@@ -76,7 +76,7 @@ def get_query_category(user_query, query_class_model):
         prediction = predictions[index].replace("__label__", "")
         score = scores[index]
         print("Drop detection loop - prediction: " + prediction + ", score: " + str(score))
-        if (score > last_score / 2): 
+        if (score > last_score / 2 and score > 0.1): 
             result_categories.append(prediction)
             sum_scores += score                
             last_score = score
@@ -164,7 +164,7 @@ def query():
         query_obj = qu.create_query("*", "", [], sort, sortDir, size=100)
 
     query_class_model = current_app.config["query_model"]
-    query_category = get_query_category(user_query, query_class_model)    
+    query_category = get_query_category(user_query.lower(), query_class_model)    
     if query_category is not None:
         query_obj["query"]["bool"]["filter"].append({
             "terms": {
