@@ -57,8 +57,36 @@ def process_filters(filters_input):
     return filters, display_filters, applied_filters
 
 def get_query_category(user_query, query_class_model):
-    print("IMPLEMENT ME: get_query_category")
-    return None
+    threshold = 0.5
+    prediction_tuple = query_class_model.predict(user_query, k=5)
+    predictions = prediction_tuple[0]
+    scores = prediction_tuple[1]
+    result_categories = []
+    sum_scores = 0
+    # for index in range(len(scores)):
+    #     prediction = predictions[index].replace("__label__", "")
+    #     score = scores[index]
+    #     print("Hard limit loop - prediction: " + prediction + ", score: " + str(score))
+    #     if (score > 0.5): 
+    #         result_categories.append(prediction)
+    #         sum_scores += score
+
+    last_score = 0
+    for index in range(len(scores)):
+        prediction = predictions[index].replace("__label__", "")
+        score = scores[index]
+        print("Drop detection loop - prediction: " + prediction + ", score: " + str(score))
+        if (score > last_score / 2): 
+            result_categories.append(prediction)
+            sum_scores += score                
+            last_score = score
+    
+    if sum_scores < 0.1:
+        print("sum_scores %s not big enough to filter" % str(sum_scores))
+        return None
+    else:
+        print("returning categories with sum_scores %s: %s" % (str(sum_scores), str(result_categories)))
+        return result_categories
 
 
 @bp.route('/query', methods=['GET', 'POST'])
@@ -136,7 +164,7 @@ def query():
         query_obj = qu.create_query("*", "", [], sort, sortDir, size=100)
 
     query_class_model = current_app.config["query_model"]
-    query_category = get_query_category(user_query, query_class_model)
+    query_category = get_query_category(user_query, query_class_model)    
     if query_category is not None:
         print("IMPLEMENT ME: add this into the filters object so that it gets applied at search time.  This should look like your `term` filter from week 1 for department but for categories instead")
     #print("query obj: {}".format(query_obj))
