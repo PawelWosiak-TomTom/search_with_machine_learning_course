@@ -12,7 +12,7 @@ stemmer = nltk.stem.PorterStemmer()
 categories_file_name = r'/workspace/datasets/product_data/categories/categories_0001_abcat0010000_to_pcmcat99300050000.xml'
 
 queries_file_name = r'/workspace/datasets/train.csv'
-output_file_name = r'/workspace/datasets/labeled_query_data.txt'
+output_file_name = r'/workspace/fasttext/labeled_query_data.txt'
 
 parser = argparse.ArgumentParser(description='Process arguments.')
 general = parser.add_argument_group("general")
@@ -55,7 +55,6 @@ print("%s queries left after removing unknown categories" % ( len(df) ) )
 df['query'] = df['query'].str.lower()
 
 # IMPLEMENT ME: Roll up categories to ancestors to satisfy the minimum number of queries per category.
-
 print("Unique categories before uplifting: %s" % (len(df['category'].value_counts())))
 print("Rarest categories before uplifting:")
 print(df['category'].value_counts().tail(5))
