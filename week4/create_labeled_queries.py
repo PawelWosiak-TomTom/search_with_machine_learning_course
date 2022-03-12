@@ -68,8 +68,8 @@ print("%s queries left after removing unknown categories" % ( len(df) ) )
 
 # IMPLEMENT ME: Convert queries to lowercase, and optionally implement other normalization, like stemming.
 # df['query'] = df['query'].str.lower()
-# df['query'] = df['query'].apply(lambda x: re.sub(r'[\W]+', ' ', x).lower())
-df['query'] = df['query'].transform(transform_query)
+df['query'] = df['query'].apply(lambda x: re.sub(r'[\W]+', ' ', x).lower())
+# df['query'] = df['query'].transform(transform_query)
 
 # IMPLEMENT ME: Roll up categories to ancestors to satisfy the minimum number of queries per category.
 print("Unique categories before uplifting: %s" % (len(df['category'].value_counts())))
