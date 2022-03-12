@@ -59,14 +59,23 @@ print("Unique categories before uplifting: %s" % (len(df['category'].value_count
 print("Rarest categories before uplifting:")
 print(df['category'].value_counts().tail(5))
 
+max_iterations = 20
 category_uplift_iteration = 0
 while (len(df['category'].value_counts().loc[lambda x : x < min_queries]) > 0):
-    for child, child_count in (df['category'].value_counts().loc[lambda x : x < min_queries]).items():    
-        parent = parents_df.loc[parents_df['category'] == child]['parent']
-        df.loc[df['category'] == child, "category"] = parent    
+    for child, child_count in (df['category'].value_counts().loc[lambda x : x < min_queries]).items():            
+        parent = parents_df.loc[parents_df['category'] == child]['parent'].values[0]
+        if (child == root_category_id):
+            print("cannot uplift to root category for %s" % child )
+        else:
+            # print("parent for %s is %s" % (child, parent))
+            df.loc[df['category'] == child, "category"] = parent # this one works few times faster
+            # df.replace({child: parent}, inplace=True)
     
     category_uplift_iteration += 1
     print("Unique categories after uplifting to min %s queries per category [iteration %s]: %s" % (str(min_queries), str(category_uplift_iteration), len(df['category'].value_counts())))
+    if category_uplift_iteration >= max_iterations:
+        print("max iterations rached - probably min_queries=%s is too high" % min_queries )
+        break
 
 print("Rarest categories count after uplifting:")
 print(df['category'].value_counts().tail(5))
