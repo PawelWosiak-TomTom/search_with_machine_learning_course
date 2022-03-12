@@ -28,6 +28,6 @@ echo -n "  test: "; cat /workspace/fasttext/test.txt | cut -d ' ' -f1 | sort | u
 echo "Least frequent categories in train:"
 cat /workspace/fasttext/train.txt | cut -d ' ' -f1 | sort | uniq -c | sort -n | head -n5
 
-~/fastText-0.9.2/fasttext supervised -input /workspace/fasttext/train.txt -output /workspace/fasttext/categories_model
+#~/fastText-0.9.2/fasttext supervised -input /workspace/fasttext/train.txt -output /workspace/fasttext/categories_model
 #echo "Testing on test_balanced: "; ~/fastText-0.9.2/fasttext test /workspace/fasttext/categories_model.bin /workspace/fasttext/test_balanced.txt
-echo "Testing on test: "; ~/fastText-0.9.2/fasttext test /workspace/fasttext/categories_model.bin /workspace/fasttext/test.txt
+#echo "Testing on test: "; ~/fastText-0.9.2/fasttext test /workspace/fasttext/categories_model.bin /workspace/fasttext/test.txt
