@@ -4,10 +4,25 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import numpy as np
 import csv
+import re
+import string
 
 # Useful if you want to perform stemming.
 import nltk
-stemmer = nltk.stem.PorterStemmer()
+
+# stemmer = nltk.stem.PorterStemmer()
+from nltk.stem.snowball import SnowballStemmer
+stemmer = SnowballStemmer("english")
+
+
+def transform_query(query):
+    query = query.lower()
+    translator = str.maketrans(string.punctuation, ' '*len(string.punctuation))
+    query = query.translate(translator)
+    query = ' '.join(query.split())
+    query = stemmer.stem(query)
+    return query
+
 
 categories_file_name = r'/workspace/datasets/product_data/categories/categories_0001_abcat0010000_to_pcmcat99300050000.xml'
 
@@ -52,7 +67,9 @@ df = df[df['category'].isin(categories)]
 print("%s queries left after removing unknown categories" % ( len(df) ) )
 
 # IMPLEMENT ME: Convert queries to lowercase, and optionally implement other normalization, like stemming.
-df['query'] = df['query'].str.lower()
+# df['query'] = df['query'].str.lower()
+# df['query'] = df['query'].apply(lambda x: re.sub(r'[\W]+', ' ', x).lower())
+df['query'] = df['query'].transform(transform_query)
 
 # IMPLEMENT ME: Roll up categories to ancestors to satisfy the minimum number of queries per category.
 print("Unique categories before uplifting: %s" % (len(df['category'].value_counts())))
