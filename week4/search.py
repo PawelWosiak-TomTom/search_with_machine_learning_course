@@ -81,7 +81,7 @@ def get_query_category(user_query, query_class_model):
             sum_scores += score                
             last_score = score
     
-    if sum_scores < 0.1:
+    if sum_scores < 0.2:
         print("sum_scores %s not big enough to filter" % str(sum_scores))
         return None
     else:
