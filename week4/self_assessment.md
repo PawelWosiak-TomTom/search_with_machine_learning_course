@@ -4,6 +4,38 @@ min_queries | number of unique categories
 ---  | ---
 100  | 866
 1000 | 374
+
+Output with additional logging from 'create_labeled_queries.py' with min_queries=1000 - it needed 5 iterations for multiple uplift of rare categories
+```
+gitpod /workspace/search_with_machine_learning_course $ python week4/create_labeled_queries.py 
+4639 parent categories loaded from file /workspace/datasets/product_data/categories/categories_0001_abcat0010000_to_pcmcat99300050000.xml
+1865269 queries loaded from file /workspace/datasets/train.csv
+1854998 queries left after removing unknown categories
+Unique categories before uplifting: 1486
+Rarest categories before uplifting:
+pcmcat230600050054    1
+pcmcat230600050036    1
+pcmcat221400050012    1
+pcmcat254000050002    1
+pcmcat221400050013    1
+Name: category, dtype: int64
+Unique categories after uplifting to min 1000 queries per category [iteration 1]: 567
+Unique categories after uplifting to min 1000 queries per category [iteration 2]: 411
+Unique categories after uplifting to min 1000 queries per category [iteration 3]: 379
+Unique categories after uplifting to min 1000 queries per category [iteration 4]: 376
+Unique categories after uplifting to min 1000 queries per category [iteration 5]: 375
+Rarest categories count after uplifting:
+pcmcat225700050005    1016
+abcat0902001          1012
+pcmcat158900050019    1008
+abcat0307017          1007
+pcmcat237000050015    1002
+Name: category, dtype: int64
+1854998 queries left after uplifting categories (should remain untouched)
+1835773 queries left after removing unknown categories
+1835773 queries to be saved to /workspace/fasttext/labeled_query_data.txt
+```
+
 ## Best values of P@1 / R@3 / R@5
 min_queries | P@1 | R@3 | R@5 | comment
 ----------- | --- | --- | --- | ---
