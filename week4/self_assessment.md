@@ -18,8 +18,14 @@ min_queries | P@1 | R@3 | R@5 | comment
 ## Positive examples
 query           | nr of results without filtering | nr of results with filtering | predicted categories | comment
  ---            | ---                             |           ---                |     --- | ---
- qc 15     |          3373                        |           1                  | conf=0.96, All Headphones (pcmcat144700050004) | without filtering not in result set, with filtering perfect match
- laptop    |         7734                         |         1492                 | conf=0.64, PC Laptops (pcmcat247400050000) | without filtering first laptop on 7th pos
- 
+ qc 15          |          3373                   |           1                  | conf=0.96, All Headphones (pcmcat144700050004) | without filtering not in result set, with filtering - perfect match
+ laptop         |         7734                    |         1492                 | conf=0.64, PC Laptops (pcmcat247400050000) | without filtering first laptop on 7th position
+ heater         |         564                     |         99                   | conf=0.96, Air Conditioners, Fans & Heaters (abcat0907000) > Heaters (abcat0907007) | without filtering flooded by CDs
 
 ## Negative examples
+query           | nr of results without filtering | nr of results with filtering | predicted categories | comment
+ ---            | ---                             |           ---                |     --- | ---
+ q9400          |          33                     |           0                  | conf=0.25 Movies & TV Shows (cat02015) | too low confidence threshold chosen (0.2)
+ a700           |          44                     |           0                  | conf=0.25 DSLR Body & Lens (pcmcat180400050000)    | category predicted by model 'DSLR Body & Lens' is one level deeper than assigned by Best Buy 'Digital SLR Cameras (abcat0401005)', although considering match confiednce, so it can be easily fixed by increasing confidence threshold
+ 
+ 
