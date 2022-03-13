@@ -165,7 +165,7 @@ def query():
 
     query_class_model = current_app.config["query_model"]
     query_category = get_query_category(user_query.lower(), query_class_model)    
-    if query_category is not None:
+    if query_category is not None and query_obj["query"].get('bool'):
         query_obj["query"]["bool"]["filter"].append({
             "terms": {
                 "categoryPathIds.keyword": query_category
